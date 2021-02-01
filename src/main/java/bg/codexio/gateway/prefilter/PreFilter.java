@@ -37,16 +37,49 @@ public class PreFilter extends ZuulFilter {
 
 
     @Override
-    public Object run() throws ZuulException {
+    public Object run(){
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
 
         String authHeader = request.getHeader("Authorization");
-        Long kur = 0L;
+        String header = "";
         if (authHeader != null && this.jwtUtils.validateJwtToken(authHeader)) {
             System.out.println("i got id from jwt");
-             kur = jwtUtils.getUserIdFromJwtToken(authHeader);
+             header = jwtUtils.getUserIdFromJwtToken(authHeader);
+            System.out.println();
+            requestContext.addZuulRequestHeader("Id", header);
+//            return header;
+//             PROBVAI BEZ RETURN TYPE
         }
-        return kur;
+        return null;
     }
+
+//    public Object run() throws ZuulException {
+//
+//        final RequestContext requestContext = RequestContext.getCurrentContext();
+//        HttpServletRequest request = requestContext.getRequest();
+//
+//        String authorizationHeader = request.getHeader("Authorization");
+//        String tokenFromHeader = getTokenFromAuthorizationHeader(authorizationHeader);
+//        DecodedJWT decodedToken = jwtService.verifyToken(tokenFromHeader);
+//        String userId = decodedToken.getKeyId();
+//        if (!decodedToken.equals(null)) {
+//            addClaimsToRequestAsHeaders(requestContext, userId);
+//        }
+//        else {
+//            throw new ZuulException("Invalid token", HttpStatus.UNAUTHORIZED.value(), "Token Signature is invalid.");
+//        }
+//
+//        return null;
+//    }
+//
+//    public static String getTokenFromAuthorizationHeader(String header) {
+//        String token = header.replace("Bearer ", "");
+//        return token.trim();
+//    }
+//
+//    private void addClaimsToRequestAsHeaders(RequestContext requestContext, String id) {
+//        requestContext.addZuulRequestHeader(X_USER_ID, id);
+//        requestContext.addZuulRequestHeader(X_USER_SCOPES, String.valueOf(userRoles));
+//    }
 }

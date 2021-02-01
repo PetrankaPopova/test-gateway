@@ -16,7 +16,7 @@ public class AuthTokenFilter {
     }
 
 
-    public Long findIdFromJwt(HttpServletRequest request) {
+    public String findIdFromJwt(HttpServletRequest request) {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && this.jwtUtils.validateJwtToken(jwt)) {
