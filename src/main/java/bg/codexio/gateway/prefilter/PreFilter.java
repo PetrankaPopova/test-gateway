@@ -33,15 +33,14 @@ public class PreFilter extends ZuulFilter {
         return !request.getRequestURI().startsWith("/auth");
     }
 
-
     @Override
     public Object run() {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
 
-        String authHeader = request.getHeader("Authorization");
+        String authHeader = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authHeader != null && this.jwtUtils.validateJwtToken(authHeader)) {
+        if (!authHeader.equals("") && this.jwtUtils.validateJwtToken(authHeader)) {
             String header = jwtUtils.getUserIdFromJwtToken(authHeader.replace("Bearer ", ""));
             requestContext.addZuulRequestHeader("Id", header);
         }
